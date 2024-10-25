@@ -14,7 +14,7 @@ rake is required to build mruby.
 ## Usage
 
 ```
-samtools/samtools view -E 'puts qname.rjust(13) + " " + seq.yellow' htslib/test/colons.bam
+samtools/samtools view -E 'puts qname.ljust(13) + seq.green' htslib/test/colons.bam
 ```
 
 ## Contributing
