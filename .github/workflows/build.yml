@@ -1,10 +1,5 @@
 name: build
-
-on:
-  push:
-  pull_request:
-  schedule:
-    - cron: "51 3 * * 6" # Runs at 03:51, only on Saturday
+on: [push, pull_request]
 jobs:
   build:
     name: ${{ matrix.os }}
@@ -19,8 +14,8 @@ jobs:
           submodules: true
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 'ruby'
-      - name: Ubuntu - Install
+          ruby-version: "ruby"
+      - name: Install dependencies (Ubuntu)
         if: matrix.os == 'ubuntu'
         run: sudo apt-get update && sudo apt-get install -y autoconf automake make gcc perl zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libdeflate-dev
       - name: Build executable
