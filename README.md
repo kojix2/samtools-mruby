@@ -14,7 +14,7 @@ samtools/samtools tanuki # check
 If you are using [conda to install Ruby](https://dev.to/kojix2/using-ruby-with-conda-1hn), setting the `LD` environment may work.
 
 ```sh
-rake LD=/usr/bin/gcc MRUBY_CONFIG=$(pwd)/samtools_mruby_build_config.rb -f $(pwd)/mruby/Rakefile
+rake LD=/usr/bin/gcc MRUBY_CONFIG=$(pwd)/mruby_build_config.rb -f $(pwd)/mruby/Rakefile
 ```
 
 ## Usage
