@@ -6,4 +6,4 @@
 	url = https://github.com/samtools/htslib
 [submodule "samtools"]
 	path = samtools
-	url = https://github.com/samtools/samtools
+	url = https://github.com/kojix2/samtools
