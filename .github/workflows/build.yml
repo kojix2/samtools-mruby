@@ -1,0 +1,33 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "51 3 * * 6" # Runs at 03:51, only on Saturday
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu", "macos"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 'ruby'
+      - name: Ubuntu - Install
+        if: matrix.os == 'ubuntu'
+        run: sudo apt-get update && sudo apt-get install -y autoconf automake make gcc perl zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libdeflate-dev
+      - name: Build executable
+        run: ./build.sh
+      - name: Run executable (help)
+        run: samtools/samtools tanuki
+      - uses: actions/upload-artifact@v4
+        with:
+          name: samtools-mruby-${{ matrix.os }}
+          path: samtools/samtools
