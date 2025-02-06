@@ -9,12 +9,12 @@ rake MRUBY_CONFIG=$current_dir/mruby_build_config.rb -f $current_dir/mruby/Rakef
 cd htslib
 autoreconf -i
 ./configure
-make
+make -j 4
 cd ..
 
 # samtools
 cd samtools
 autoreconf -i
 ./configure
-make
+make -j 4
 cd ..
