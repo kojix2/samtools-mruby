@@ -1,5 +1,7 @@
 # samtools-mruby
 
+[![build](https://github.com/kojix2/samtools-mruby/actions/workflows/build.yml/badge.svg)](https://github.com/kojix2/samtools-mruby/actions/workflows/build.yml)
+
 Use [mruby](https://github.com/mruby/mruby) to evaluate expressions.
 
 ## Instllation
