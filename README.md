@@ -12,6 +12,18 @@ git clone --recurse-submodules https://github.com/kojix2/samtools-mruby
 samtools/samtools tanuki # check
 ```
 
+```
+　　　　__,-─-､__
+　　　（〆-─-ヽ)
+　　　 （ ´・ω・｀ ）
+　　　/ 　,r‐‐‐､ヽ
+　 　 し　ｌ　 x　）J
+　　　_.'､ ヽ　 ノ.人
+　(_((__,ノＵ´U. (酒)
+
+　Tanuki in mruby (3.3.0)
+```
+
 [Rake](https://github.com/ruby/rake) is required to build mruby.
 If you are using [conda to install Ruby](https://dev.to/kojix2/using-ruby-with-conda-1hn), setting the `LD` environment may work.
 
