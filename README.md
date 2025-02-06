@@ -33,9 +33,36 @@ rake LD=/usr/bin/gcc MRUBY_CONFIG=$(pwd)/mruby_build_config.rb -f $(pwd)/mruby/R
 
 ## Usage
 
+### Evaluating Expressions with mruby
+
+The `samtools view` command has been extended to support mruby expressions using the `-E` option. This allows you to script and manipulate BAM records directly within the command. Here is an example of how to use it:
+
 ```sh
 samtools/samtools view -E 'puts qname.ljust(13) + seq.green' htslib/test/colons.bam
 ```
+
+### Available Methods
+
+- `endpos`: Returns the alignment end position (1-based).
+- `flag`: Checks specific flags in the BAM record.
+- `hclen`: Returns the number of hard clipped bases.
+- `mapq`: Returns the mapping quality.
+- `mrefid`: Returns the mate reference number (0-based).
+- `ncigar`: Returns the number of CIGAR operations.
+- `pnext`: Returns the mate's alignment position (1-based).
+- `pos`: Returns the alignment position (1-based).
+- `qlen`: Returns the alignment length (number of query bases).
+- `qname`: Returns the query name.
+- `qual`: Returns the quality values (raw, 0-based).
+- `refid`: Returns the integer reference number (0-based).
+- `rlen`: Returns the alignment length (number of reference bases).
+- `rname`: Returns the reference name.
+- `rnext`: Returns the mate's reference name.
+- `sclen`: Returns the number of soft clipped bases.
+- `seq`: Returns the sequence.
+- `tlen`: Returns the template length (insert size).
+- `tag`: Returns the value of a specified tag.
+
 
 ## Development
 
