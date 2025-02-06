@@ -39,6 +39,12 @@ samtools/samtools view -E 'puts qname.ljust(13) + seq.green' htslib/test/colons.
 
 ## Development
 
+To see the changes made to the original samtools repository, use the following command.
+
+```
+git -C samtools diff origin/develop...origin/mruby
+```
+
 1. The mruby directory has not been changed. It was added to a submodule because it is needed to generate libmruby.a.
     1. The following mrbgems are included:
         1. [mruby-terminal-color](https://github.com/buty4649/mruby-terminal-color)
