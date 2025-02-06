@@ -45,6 +45,8 @@ Regular expressions is also available.
 samtools view -E 'puts qname.ljust(13) + seq.gsub(/CG/, &:red)' htslib/test/colons.bam
 ```
 
+![screenshot](https://raw.githubusercontent.com/kojix2/samtools-mruby/screenshot/screenshot-01.png)
+
 ## Development
 
 To see the changes made to the original samtools repository, use the following command.
