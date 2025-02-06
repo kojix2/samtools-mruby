@@ -9,7 +9,7 @@ Use [mruby](https://github.com/mruby/mruby) to evaluate expressions.
 ```sh
 git clone --recurse-submodules https://github.com/kojix2/samtools-mruby
 ./build.sh
-samtools/samtools tanuki # check
+samtools/samtools tanuki # check if it works
 ```
 
 ```
@@ -56,3 +56,7 @@ samtools/samtools view -E 'puts qname.ljust(13) + seq.green' htslib/test/colons.
 ## License
 
 MIT License
+
+## Related Projects
+
+- [bcftools-mruby](https://github.com/kojix2/bcftools-mruby)
