@@ -2,9 +2,9 @@
 
 [![build](https://github.com/kojix2/samtools-mruby/actions/workflows/build.yml/badge.svg)](https://github.com/kojix2/samtools-mruby/actions/workflows/build.yml)
 
-Use [mruby](https://github.com/mruby/mruby) to evaluate expressions.
+Use [mruby](https://github.com/mruby/mruby) to evaluate expressions in [samtools](https://github.com/samtools/samtools)!
 
-## Instllation
+## Installation
 
 ```sh
 git clone --recurse-submodules https://github.com/kojix2/samtools-mruby
@@ -25,7 +25,7 @@ samtools/samtools tanuki # check if it works
 ```
 
 [Rake](https://github.com/ruby/rake) is required to build mruby.
-If you are using [conda to install Ruby](https://dev.to/kojix2/using-ruby-with-conda-1hn), setting the `LD` environment may work.
+If you are using [conda to install Ruby](https://dev.to/kojix2/using-ruby-with-conda-1hn), set the `LD` environment variable:
 
 ```sh
 rake LD=/usr/bin/gcc MRUBY_CONFIG=$(pwd)/mruby_build_config.rb -f $(pwd)/mruby/Rakefile
@@ -33,13 +33,13 @@ rake LD=/usr/bin/gcc MRUBY_CONFIG=$(pwd)/mruby_build_config.rb -f $(pwd)/mruby/R
 
 ## Usage
 
-Output the read name and sequence of the bam file in green.
+Output the read name and sequence of the BAM file in green:
 
 ```sh
 samtools view -E 'puts qname.ljust(13) + seq.green' htslib/test/colons.bam
 ```
 
-Regular expressions is also available.
+Highlight specific patterns using **regular expressions**:
 
 ```sh
 samtools view -E 'puts qname.ljust(13) + seq.gsub(/CG/, &:red)' htslib/test/colons.bam
@@ -47,27 +47,78 @@ samtools view -E 'puts qname.ljust(13) + seq.gsub(/CG/, &:red)' htslib/test/colo
 
 ![screenshot](https://raw.githubusercontent.com/kojix2/samtools-mruby/screenshot/screenshot-01.png)
 
+### Working with Flags
+
+You can access the SAM flag information using the `flags` method or specific flag methods:
+
+```sh
+samtools view -E 'puts "#{qname} is paired" if paired?' htslib/test/colons.bam
+```
+
+Available flag methods:
+
+- `flags`: Returns the combined FLAG field (integer).
+- `paired?`: True if the read is part of a pair.
+- `proper_pair?`: Properly paired.
+- `unmap?`: Read is unmapped.
+- `munmap?`: Mate is unmapped.
+- `reverse?`: Read is mapped to the reverse strand.
+- `mreverse?`: Mate is mapped to the reverse strand.
+- `read1?`: First read in a pair.
+- `read2?`: Second read in a pair.
+- `secondary?`: Secondary alignment.
+- `qcfail?`: QC failure.
+- `dup?`: Duplicate.
+- `supplementary?`: Supplementary alignment.
+
+It works without the `?`
+
+```sh
+samtools view -E 'puts "#{qname} is paired" if paired' htslib/test/colons.bam
+```
+
+Example to filter proper pairs:
+
+```sh
+samtools view -E 'puts qname if proper_pair?' htslib/test/colons.bam
+```
+
+### Using Tags
+
+Access BAM tags easily:
+
+```sh
+samtools view -E 'puts "NM:#{tag("NM")}" if tag("NM")' htslib/test/colons.bam
+```
+
+## Local vs Global Variables
+
+- **Local Variables**: Defined inside expressions. Their values do **NOT** persist across records.
+- **Global Variables**: Defined with `$` (e.g., `$count = 0`). These **persist** across record iterations.
+
+Example to count mapped reads:
+
+```sh
+samtools view -E '$count ||= 0; $count += 1 unless unmap?; END { puts $count }' htslib/test/colons.bam
+```
+
 ## Development
 
-To see the changes made to the original samtools repository, use the following command.
+To see changes made to the original samtools repository:
 
-```
+```sh
 git -C samtools diff origin/develop...origin/mruby
 ```
 
-1. The mruby directory has not been changed. It was added to a submodule because it is needed to generate libmruby.a.
-   1. The following mrbgems are included:
-      1. [mruby-terminal-color](https://github.com/buty4649/mruby-terminal-color)
-      2. [mruby-regexp-pcre](https://github.com/iij/mruby-regexp-pcre)
-2. The htslib directory is also unchanged. This is also useful for samtools builds, so I added it as a submodule.
-3. It is preferable to use the latest stable versions of mruby and htslib. These are not modified and can be easily updated.
-4. samtools is not origin, but the mruby branch of the kojix2 repository.
-5. The tanuki subcommand helps distinguish between ordinary samtools and samtools that incorporate mruby.
+- The `mruby` and `htslib` directories are submodules.
+  - [mruby-terminal-color](https://github.com/buty4649/mruby-terminal-color)
+  - [mruby-regexp-pcre](https://github.com/iij/mruby-regexp-pcre)
+- `samtools` is based on the `mruby` branch of the kojix2 repository.
+- The `tanuki` subcommand distinguishes between standard and mruby-enhanced samtools.
 
 ## Contributing
 
-- Fork it
-- Pull Request welcome!
+Send pull requests to the `mruby` branch of my [samtools repository](https://github.com/kojix2/samtools).
 
 ## License
 
