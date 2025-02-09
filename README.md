@@ -39,7 +39,8 @@ The `samtools-mruby` project allows you to use mruby expressions to manipulate a
 
 - `endpos`: Alignment end position (1-based)
 - `flags`: Combined FLAG field
-    - `paired` `proper_pair` `unmap` `munmap` `reverse` `mreverse` `read1` `read2` `secondary` `qcfail` `dup` `supplementary`
+  - `paired`, `proper_pair`, `unmap`, `munmap`, `reverse`, `mreverse`, `read1`, `read2`, `secondary`, `qcfail`, `dup`, `supplementary`
+  - These can be used with or without the `?` suffix, e.g., `paired` and `paired?` are equivalent.
 - `hclen`: Number of hard clipped bases
 - `library`: Library (LB header via RG)
 - `mapq`: Mapping quality
@@ -77,21 +78,22 @@ These variables enable detailed data manipulation and analysis.
   samtools view -E 'puts qname.ljust(13) + seq.gsub(/CG/, &:red)' htslib/test/colons.bam
   ```
 
-- **Flag Methods**: Access SAM flag information.
+- **Flag Methods**: Access SAM flag information. Flag methods can be used with or without the `?` suffix. For example, `paired` and `paired?` are equivalent.
 
   ```sh
-  samtools view -E 'puts "#{qname} is paired" if paired?' htslib/test/colons.bam
+  samtools view -E 'puts "#{qname} is paired" if paired?' example.bam
   ```
 
 - **Tag Access**: Retrieve BAM tags.
 
   ```sh
-  samtools view -E 'puts "NM:#{tag("NM")}" if tag("NM")' htslib/test/colons.bam
+  samtools view -E 'puts "NM:#{tag("NM")}" if tag("NM")' example.bam
   ```
 
 - **Custom Filtering**: Use expressions for filtering.
   ```sh
-  samtools view -E 'puts qname if flags & 0x2 != 0' htslib/test/colons.bam
+  samtools view -E 'puts qname if prpper_pair?' example.bam
+  # samtools view -E 'puts qname if flags & 0x2 != 0' example.bam
   ```
 
 ### Variables
@@ -102,7 +104,7 @@ These variables enable detailed data manipulation and analysis.
 Example to count mapped reads:
 
 ```sh
-samtools view -E '$count ||= 0; $count += 1 unless unmap?; END { puts $count }' htslib/test/colons.bam
+samtools view -E '$count ||= 0; $count += 1 unless unmap?; END { puts $count }' example.bam
 ```
 
 ## Development
