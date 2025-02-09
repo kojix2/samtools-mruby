@@ -4,6 +4,8 @@
 
 Use [mruby](https://github.com/mruby/mruby) to evaluate expressions in [samtools](https://github.com/samtools/samtools)!
 
+![screenshot](https://raw.githubusercontent.com/kojix2/samtools-mruby/screenshot/screenshot-01.png)
+
 ## Installation
 
 ```sh
@@ -33,68 +35,69 @@ rake LD=/usr/bin/gcc MRUBY_CONFIG=$(pwd)/mruby_build_config.rb -f $(pwd)/mruby/R
 
 ## Usage
 
-Output the read name and sequence of the BAM file in green:
+The `samtools-mruby` project allows you to use mruby expressions to manipulate and analyze BAM files. The available variables include:
 
-```sh
-samtools view -E 'puts qname.ljust(13) + seq.green' htslib/test/colons.bam
-```
+- `endpos`: Alignment end position (1-based)
+- `flags`: Combined FLAG field
+- `flag_paired`, `flag_proper_pair`, `flag_unmap`, `flag_munmap`, `flag_reverse`, `flag_mreverse`, `flag_read1`, `flag_read2`, `flag_secondary`, `flag_qcfail`, `flag_dup`, `flag_supplementary`: Individual flag checks
+- `hclen`: Number of hard clipped bases
+- `library`: Library (LB header via RG)
+- `mapq`: Mapping quality
+- `mpos`: Synonym for pnext
+- `mrefid`: Mate reference number (0 based)
+- `mrname`: Synonym for rnext
+- `ncigar`: Number of CIGAR operations
+- `pnext`: Mate's alignment position (1-based)
+- `pos`: Alignment position (1-based)
+- `qlen`: Alignment length: no. query bases
+- `qname`: Query name
+- `qual`: Quality values (raw, 0-based)
+- `refid`: Integer reference number (0 based)
+- `rlen`: Alignment length: no. reference bases
+- `rname`: Reference name
+- `rnext`: Mate's reference name
+- `sclen`: Number of soft clipped bases
+- `seq`: Sequence
+- `tlen`: Template length (insert size)
+- `tag`: XX tag value
 
-Highlight specific patterns using **regular expressions**:
+These variables enable detailed data manipulation and analysis.
 
-```sh
-samtools view -E 'puts qname.ljust(13) + seq.gsub(/CG/, &:red)' htslib/test/colons.bam
-```
+### Examples
 
-![screenshot](https://raw.githubusercontent.com/kojix2/samtools-mruby/screenshot/screenshot-01.png)
+- **Basic Usage**: Output read name and sequence in green.
 
-### Working with Flags
+  ```sh
+  samtools view -E 'puts qname.ljust(13) + seq.green' htslib/test/colons.bam
+  ```
 
-You can access the SAM flag information using the `flags` method or specific flag methods:
+- **Pattern Highlighting**: Use regular expressions.
 
-```sh
-samtools view -E 'puts "#{qname} is paired" if paired?' htslib/test/colons.bam
-```
+  ```sh
+  samtools view -E 'puts qname.ljust(13) + seq.gsub(/CG/, &:red)' htslib/test/colons.bam
+  ```
 
-Available flag methods:
+- **Flag Methods**: Access SAM flag information.
 
-- `flags`: Returns the combined FLAG field (integer).
-- `paired?`: True if the read is part of a pair.
-- `proper_pair?`: Properly paired.
-- `unmap?`: Read is unmapped.
-- `munmap?`: Mate is unmapped.
-- `reverse?`: Read is mapped to the reverse strand.
-- `mreverse?`: Mate is mapped to the reverse strand.
-- `read1?`: First read in a pair.
-- `read2?`: Second read in a pair.
-- `secondary?`: Secondary alignment.
-- `qcfail?`: QC failure.
-- `dup?`: Duplicate.
-- `supplementary?`: Supplementary alignment.
+  ```sh
+  samtools view -E 'puts "#{qname} is paired" if paired?' htslib/test/colons.bam
+  ```
 
-It works without the `?`
+- **Tag Access**: Retrieve BAM tags.
 
-```sh
-samtools view -E 'puts "#{qname} is paired" if paired' htslib/test/colons.bam
-```
+  ```sh
+  samtools view -E 'puts "NM:#{tag("NM")}" if tag("NM")' htslib/test/colons.bam
+  ```
 
-Example to filter proper pairs:
+- **Custom Filtering**: Use expressions for filtering.
+  ```sh
+  samtools view -E 'puts qname if flags & 0x2 != 0' htslib/test/colons.bam
+  ```
 
-```sh
-samtools view -E 'puts qname if proper_pair?' htslib/test/colons.bam
-```
+### Variables
 
-### Using Tags
-
-Access BAM tags easily:
-
-```sh
-samtools view -E 'puts "NM:#{tag("NM")}" if tag("NM")' htslib/test/colons.bam
-```
-
-## Local vs Global Variables
-
-- **Local Variables**: Defined inside expressions. Their values do **NOT** persist across records.
-- **Global Variables**: Defined with `$` (e.g., `$count = 0`). These **persist** across record iterations.
+- **Local**: Defined inside expressions, do not persist.
+- **Global**: Defined with `$`, persist across records.
 
 Example to count mapped reads:
 
@@ -103,6 +106,16 @@ samtools view -E '$count ||= 0; $count += 1 unless unmap?; END { puts $count }' 
 ```
 
 ## Development
+
+The `samtools-mruby` project integrates `mruby` into `samtools`, allowing for enhanced functionality through mruby expressions. This integration includes:
+
+- **Makefile Modifications**: Added support for mruby by including `MRBDIR`, `MRB_CPPFLAGS`, and `MRB_LDFLAGS`. Updated object files list to include `tanuki.o` and `sam_view_mruby.o`.
+- **bamtk.c**: Introduced a new `tanuki` command, which displays a tanuki using mruby.
+- **sam_view.c**: Added support for evaluating mruby expressions with a new `mruby_expr` field in settings. Integrated mruby initialization and finalization.
+- **New Files**:
+  - `sam_view_mruby.c`: Implements methods for interacting with BAM records using mruby.
+  - `sam_view_mruby.h`: Header file for `sam_view_mruby.c`.
+  - `tanuki.c`: Contains the implementation for the `tanuki` command.
 
 To see changes made to the original samtools repository:
 
@@ -122,7 +135,8 @@ Send pull requests to the `mruby` branch of my [samtools repository](https://git
 
 ## License
 
-MIT License
+- MIT License
+- This tool was created actively using code generators such as ChatGPT and Copilot.
 
 ## Related Projects
 
