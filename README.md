@@ -39,7 +39,7 @@ The `samtools-mruby` project allows you to use mruby expressions to manipulate a
 
 - `endpos`: Alignment end position (1-based)
 - `flags`: Combined FLAG field
-- `flag_paired`, `flag_proper_pair`, `flag_unmap`, `flag_munmap`, `flag_reverse`, `flag_mreverse`, `flag_read1`, `flag_read2`, `flag_secondary`, `flag_qcfail`, `flag_dup`, `flag_supplementary`: Individual flag checks
+    - `paired` `proper_pair` `unmap` `munmap` `reverse` `mreverse` `read1` `read2` `secondary` `qcfail` `dup` `supplementary`
 - `hclen`: Number of hard clipped bases
 - `library`: Library (LB header via RG)
 - `mapq`: Mapping quality
