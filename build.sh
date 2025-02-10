@@ -18,3 +18,5 @@ autoreconf -i
 ./configure
 make -j 4
 cd ..
+
+samtools/samtools tanuki
