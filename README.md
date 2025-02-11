@@ -9,8 +9,8 @@ Use [mruby](https://github.com/mruby/mruby) to evaluate expressions in [samtools
 ## Installation
 
 ```sh
-git clone --recurse-submodules https://github.com/kojix2/samtools-mruby
-./build.sh
+git clone https://github.com/kojix2/samtools-mruby
+make
 samtools/samtools tanuki # check if it works
 ```
 
