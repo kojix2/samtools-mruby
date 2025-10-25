@@ -25,7 +25,7 @@ jobs:
         run: make
       - name: Run executable (help)
         run: samtools/samtools tanuki
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: samtools-mruby-${{ matrix.os }}
           path: samtools/samtools
