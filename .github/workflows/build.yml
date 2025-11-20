@@ -9,7 +9,7 @@ jobs:
       matrix:
         os: ["ubuntu", "macos"]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           submodules: true
       - uses: ruby/setup-ruby@v1
