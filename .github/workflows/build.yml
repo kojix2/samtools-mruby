@@ -25,6 +25,16 @@ jobs:
         run: make
       - name: Run executable (help)
         run: samtools/samtools tanuki
+      - name: Run mruby view smoke tests
+        run: |
+          set -eu
+          test "$(samtools/samtools view -E 'qname == "a1"' 'htslib/test/xx#MD2.sam' | wc -l | tr -d ' ')" = 1
+          samtools/samtools view -E 'puts "#{qname}:#{tag("NM")}" if qname == "a1"; false' 'htslib/test/xx#MD2.sam' | grep -qx 'a1:0'
+          samtools/samtools view -E 'proper_pair?' htslib/test/colons.bam > /dev/null
+          if samtools/samtools view -E 'if ' htslib/test/colons.bam > /dev/null 2>&1; then
+            echo "invalid mruby expression unexpectedly succeeded" >&2
+            exit 1
+          fi
       - uses: actions/upload-artifact@v7
         with:
           name: samtools-mruby-${{ matrix.os }}
