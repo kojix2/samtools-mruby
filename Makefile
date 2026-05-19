@@ -1,9 +1,13 @@
-.PHONY: all mruby htslib samtools clean update_submodules
+.PHONY: all init mruby htslib samtools clean mruby-clean distclean update_submodules
 
-JOBS ?= $(shell echo $${MAKEFLAGS} | sed -n 's/.*-j\([0-9][0-9]*\).*/\1/p')
-JOBS ?= 4
+JOBS := $(shell echo $${MAKEFLAGS} | sed -n 's/.*-j\([0-9][0-9]*\).*/\1/p')
+ifeq ($(JOBS),)
+JOBS := 4
+endif
 
-all: update_submodules samtools
+all: samtools
+
+init: update_submodules
 
 update_submodules:
 	@echo "Updating git submodules..."
@@ -23,5 +27,13 @@ samtools: mruby htslib
 
 clean:
 	@echo "Cleaning up..."
-	cd htslib && make clean
-	cd samtools && make clean
+	cd htslib && $(MAKE) clean
+	cd samtools && $(MAKE) clean
+
+mruby-clean:
+	@echo "Cleaning mruby..."
+	CONFIG=./mruby_build_config.rb rake -f mruby/Rakefile clean
+
+distclean: clean mruby-clean
+	@echo "Cleaning generated autotools files..."
+	rm -rf htslib/autom4te.cache samtools/autom4te.cache
