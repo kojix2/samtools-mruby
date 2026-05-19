@@ -13,7 +13,7 @@ MRuby::Build.new do |conf|
   # conf.gem :github => 'mattn/mruby-onig-regexp'
   # conf.gem :git => 'git@github.com:mattn/mruby-onig-regexp.git', :branch => 'master', :options => '-v'
 
-  conf.gem :github => 'iij/mruby-regexp-pcre', :branch => 'master'
+  conf.gem :github => 'kojix2/mruby-regexp-pcre', :branch => 'master'
   conf.gem :github => 'buty4649/mruby-terminal-color', :branch => 'main'
 
   # include the GEM box
