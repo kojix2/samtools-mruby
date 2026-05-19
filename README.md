@@ -9,7 +9,8 @@ Use [mruby](https://github.com/mruby/mruby) to evaluate expressions in [samtools
 ## Installation
 
 ```sh
-git clone https://github.com/kojix2/samtools-mruby
+git clone --recursive https://github.com/kojix2/samtools-mruby
+cd samtools-mruby
 make
 samtools/samtools tanuki # check if it works
 ```
@@ -42,7 +43,6 @@ The `samtools-mruby` project allows you to use mruby expressions to manipulate a
   - `paired`, `proper_pair`, `unmap`, `munmap`, `reverse`, `mreverse`, `read1`, `read2`, `secondary`, `qcfail`, `dup`, `supplementary`
   - These can be used with or without the `?` suffix, e.g., `paired` and `paired?` are equivalent.
 - `hclen`: Number of hard clipped bases
-- `library`: Library (LB header via RG)
 - `mapq`: Mapping quality
 - `mpos`: Synonym for pnext
 - `mrefid`: Mate reference number (0 based)
@@ -92,7 +92,7 @@ These variables enable detailed data manipulation and analysis.
 
 - **Custom Filtering**: Use expressions for filtering.
   ```sh
-  samtools view -E 'puts qname if prpper_pair?' example.bam
+  samtools view -E 'puts qname if proper_pair?' example.bam
   # samtools view -E 'puts qname if flags & 0x2 != 0' example.bam
   ```
 
@@ -104,7 +104,7 @@ These variables enable detailed data manipulation and analysis.
 Example to count mapped reads:
 
 ```sh
-samtools view -E '$count ||= 0; $count += 1 unless unmap?; END { puts $count }' example.bam
+samtools view -c -E '!unmap?' example.bam
 ```
 
 ## Development
@@ -126,6 +126,7 @@ git -C samtools diff origin/develop...origin/mruby
 ```
 
 - The `mruby` and `htslib` directories are submodules.
+  - If you cloned without `--recursive`, run `make init` before building.
   - [mruby-terminal-color](https://github.com/buty4649/mruby-terminal-color)
   - [mruby-regexp-pcre](https://github.com/iij/mruby-regexp-pcre)
 - `samtools` is based on the `mruby` branch of the kojix2 repository.
